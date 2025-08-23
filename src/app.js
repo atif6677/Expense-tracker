@@ -1,35 +1,34 @@
 const express = require('express');
-const path = require('path');
-const userRoutes = require('./routes/userRoutes');
 const app = express();
-const db = require('./utils/dbConnection');  
 const port = 3000;
-
-app.use(express.static(path.join(__dirname, '../public')));
-
-
+const path = require('path');
+const signupRoutes = require('./routes/signupRoutes');
+const db = require('./utils/database');
+const cors = require('cors');
+app.use(cors());
 
 
 app.use(express.json());
-app.use('/users', userRoutes);
-
-
 
 app.get('/', (req, res) => {
-  res.send("Welcome to the Expense Tracker API");
+  res.sendFile(path.join(__dirname, '../public/HTML/signup.html'));
 });
 
 
+// serve all files in /public
+app.use(express.static(path.join(__dirname, '../public')));
 
+// signup API routes
+app.use('/signup', signupRoutes);
 
-
-db.sync({ force: false })
+// sync DB and start server
+db.sync()
   .then(() => {
-    console.log('Database & tables created/synced!');
+    console.log('✅ Database synced');
     app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`🚀 Server running at http://localhost:${port}`);
     });
   })
-  .catch(err => {
-    console.error('Unable to connect to the database or sync models:', err);
+  .catch((error) => {
+    console.error('❌ Error syncing database:', error);
   });
