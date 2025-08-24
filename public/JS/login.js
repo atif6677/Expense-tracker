@@ -29,12 +29,3 @@ function login(event) {
     loginPassword.value = "";
 }
 
-// redirect to signup page
-document.addEventListener("DOMContentLoaded", () => {
-    const signupBtn = document.getElementById("signup-btn");
-    if(signupBtn){
-        signupBtn.addEventListener("click", () => {
-            window.location.href = "signup.html";  // change path if needed
-        });
-    }
-});
