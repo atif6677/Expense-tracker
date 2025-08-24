@@ -1,4 +1,3 @@
-
 function signup(event) {
     event.preventDefault();
 
@@ -15,16 +14,21 @@ function signup(event) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })
     })
-    .then(res => res.json())
-    .then(data => {
-        console.log("Response:", data);
-        alert("Signup successful!");
+    .then(async res => {
+        const data = await res.json();
+
+        if (res.ok) {
+            alert(data.message || "Signup successful!");
+        } else {
+            alert(data.error || "Signup failed!");
+        }
     })
     .catch(err => {
         console.error("Error:", err);
-        alert("Signup failed!");
+        alert("Something went wrong!");
     });
 
+    // clear inputs
     nameInput.value = "";
     emailInput.value = "";
     passwordInput.value = "";
