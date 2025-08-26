@@ -1,4 +1,6 @@
-function login(event) {
+
+//login.js
+async function login(event) {
     event.preventDefault();
     
     const loginEmail = document.querySelector('#email');
@@ -7,25 +9,28 @@ function login(event) {
     const email = loginEmail.value.trim();
     const password = loginPassword.value.trim();
 
-    fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, password })
-    })
-    .then(async res => {
-        const data = await res.json();
-        if(res.ok){
-            alert(data.message || "Login successful!");
+    try {
+        const res = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();  //  grab backend response
+
+        if (res.ok) {
+            
+            window.location.href = "../home.html"; // redirect to home page 
+
         } else {
             alert(data.error || "Login failed!");
         }
-    })
-    .catch(err => {
+    } 
+    catch (err) {
         console.error("Error:", err);
         alert("Something went wrong!");
-    });
+    }
 
     loginEmail.value = "";
     loginPassword.value = "";
 }
-
