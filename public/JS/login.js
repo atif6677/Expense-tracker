@@ -19,6 +19,7 @@ async function login(event) {
         const data = await res.json();  //  grab backend response
 
         if (res.ok) {
+            localStorage.setItem("token", data.token);
             
             window.location.href = "../home.html"; // redirect to home page 
 

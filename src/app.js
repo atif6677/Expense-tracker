@@ -1,3 +1,5 @@
+//app.js
+
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -5,6 +7,8 @@ const path = require('path');
 const signupRoutes = require('./routes/signupRoute');
 const loginRoutes = require('./routes/loginRoute');
 const homeRoutes = require('./routes/homeRoute');
+const User = require('./models/signupModel');
+const Expense = require('./models/homeModel');
 const db = require('./utils/database');
 const cors = require('cors');
 
@@ -25,14 +29,17 @@ app.use('/', loginRoutes);
 // home route
 app.use('/',homeRoutes);
 
+
+
+
 // sync DB and start server
 db.sync()
   .then(() => {
     console.log('✅ Database synced');
     app.listen(port, () => {
-      console.log(`🚀 Server running at http://localhost:${port}`);
+      console.log(` Server running at http://localhost:${port}`);
     });
   })
   .catch((error) => {
-    console.error('❌ Error syncing database:', error);
+    console.error(' Error syncing database:', error);
   });

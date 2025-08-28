@@ -21,7 +21,7 @@ async function signup(event) {
         const data = await res.json();
 
         if (res.ok) {
-            alert(data.message || "Signup successful!");
+            window.location.href = "../login.html";
         } else {
             alert(data.error || "Signup failed!");
         }

@@ -1,12 +1,14 @@
 const User = require("../models/signupModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const JWT_SECRET = "secretKey"; // later move this to process.env.JWT_SECRET
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-       res.status(400).json({ error: "Email and password are required" });
-       return;
+      return res.status(400).json({ error: "Email and password are required" });
     }
 
     // check if user exists
@@ -17,13 +19,21 @@ const loginUser = async (req, res) => {
 
     // check if password matches
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       return res.status(400).json({ error: "Incorrect password" });
     }
 
-    // login successful
-    res.status(200).json({ message: "Login successful", user });
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
