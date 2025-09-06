@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script> <!-- for cashfree Payment -->
+
 </head>
 <body>
     <form onsubmit="home(event)">
@@ -26,6 +28,11 @@
         <button type="submit">Add Expense</button>
     </form>
 
+
+    <div class="row">
+            <button id="renderBtn">Buy Premium</button>
+    </div>
+
     <div>
         <h3>Expense List</h3> <hr>
         <ul id="expenseList">
@@ -33,6 +40,7 @@
         </ul>
     </div>
 
+ 
     <script src="./JS/home.js"></script>
 </body>
 </html>

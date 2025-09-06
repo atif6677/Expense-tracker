@@ -1,4 +1,4 @@
-//signupModel.js
+// signupModel.js
 
 const db = require("../utils/database");
 const { DataTypes } = require("sequelize");
@@ -21,7 +21,7 @@ const User = db.define("User", {
   password: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
 });
 
 module.exports = User;

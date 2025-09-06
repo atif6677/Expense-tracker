@@ -1,7 +1,7 @@
 // homeController.js
 const Expense = require('../models/homeModel');
 
-// ➕ Add Expense
+
 const addExpense = async (req, res) => {
   try {
     const { amount, description, category } = req.body;
@@ -36,7 +36,7 @@ const getExpense = async (req, res) => {
   }
 };
 
-// ❌ Delete expense (only if it belongs to logged-in user)
+
 const deleteExpense = async (req, res) => {
   try {
     const { id } = req.params;

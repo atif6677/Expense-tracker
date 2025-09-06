@@ -20,7 +20,6 @@ async function login(event) {
 
         if (res.ok) {
             localStorage.setItem("token", data.token);
-            
             window.location.href = "../home.html"; // redirect to home page 
 
         } else {
