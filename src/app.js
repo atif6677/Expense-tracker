@@ -14,7 +14,7 @@ const signupRoutes = require("./routes/signupRoute");
 const loginRoutes = require("./routes/loginRoute");
 const homeRoutes = require("./routes/homeRoute");
 const paymentRoutes = require("./routes/paymentRoute");
-
+const premiumRoutes = require("./routes/premiumUserRoute")
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -25,6 +25,7 @@ app.use("/", signupRoutes);
 app.use("/", loginRoutes);
 app.use("/", homeRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/premium",premiumRoutes);
 
 // Sync DB and start server
 db.sync()

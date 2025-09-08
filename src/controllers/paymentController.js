@@ -1,12 +1,10 @@
-// src/controllers/paymentController.j
-
 // src/controllers/paymentController.js
 
 const Order = require("../models/orderModel");
 const User = require("../models/signupModel");
 const cashfreeService = require("../services/cashfreeService");
 
-// Create a new premium order
+// Create or update a premium order (one row per user)
 exports.createPremiumOrder = async (req, res) => {
     try {
         const user = await User.findByPk(req.user.userId);
@@ -25,12 +23,21 @@ exports.createPremiumOrder = async (req, res) => {
 
         if (!paymentSessionId) throw new Error("Failed to create payment session.");
 
-        const newOrder = await user.createOrder({
-            orderId,
-            status: 'PENDING'
-        });
+        //  Ensure only one order per user
+        let order = await Order.findOne({ where: { UserId: user.id } });
 
-        return res.status(201).json({ order: newOrder, payment_session_id: paymentSessionId, order_id: orderId });
+        if (order) {
+            // Update existing order
+            await order.update({ orderId, status: 'PENDING' });
+        } else {
+            // Create new order if none exists
+            order = await user.createOrder({
+                orderId,
+                status: 'PENDING'
+            });
+        }
+
+        return res.status(201).json({ order, payment_session_id: paymentSessionId, order_id: orderId });
     } catch (err) {
         console.error("Error in createPremiumOrder:", err);
         return res.status(500).json({ error: 'Something went wrong while creating the order.' });
@@ -56,12 +63,11 @@ exports.updateTransactionStatus = async (req, res) => {
                 order.update({ status: 'SUCCESSFUL' }),
                 user.update({ isPremiumUser: true })
             ]);
-            return res.send("<h1>Transaction Successful ✅</h1><p>You are now a premium user.</p>");
+            return res.send("<h1>Transaction Successful </h1><p>You are now a premium user.</p>");
         } else {
             await order.update({ status: 'FAILED' });
-            return res.send("<h1>Transaction Failed ❌</h1><p>Please try again.</p>");
+            return res.send("<h1>Transaction Failed </h1><p>Please try again.</p>");
         }
-
     } catch (err) {
         console.error("Error in updateTransactionStatus:", err);
         return res.send("<h1>Something went wrong while updating transaction.</h1>");

@@ -92,6 +92,73 @@ async function display() {
     } catch (error) {
         console.error("Unable to fetch data to display", error);
     }
+
+
+//premium user check and feature display
+   try {
+    const result = await fetch("http://localhost:3000/premium/status", {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if(result.ok){
+        const data = await result.json();
+
+        if(data.status === "SUCCESSFUL"){
+
+            // Hide "Buy Premium" button
+           const buyPremiumBtn = document.querySelector("#renderBtn");
+           if (buyPremiumBtn) buyPremiumBtn.style.display = "none";
+
+            const premiumHeader = document.querySelector("#premiumUser");
+            premiumHeader.innerHTML = `<p>You are a premium user now</p>`;
+
+            
+
+            const leaderBoardBtn = document.createElement("button");
+            leaderBoardBtn.textContent = "Show LeaderBoard";
+
+            const leaderBoardHeading = document.createElement("h3");
+            leaderBoardHeading.textContent ="LeaderBoard";
+
+            const leaderBtn = document.querySelector("#leaderBtn")
+
+            
+            leaderBtn.appendChild(leaderBoardBtn);
+           
+
+            leaderBoardBtn.onclick = async () => {
+                leaderBtn.appendChild(leaderBoardHeading);
+                
+                try {
+                    const res = await fetch("http://localhost:3000/premium/leaderboard");
+                    
+                    if(res.ok) {
+                        const data = await res.json();
+                        const ul = document.getElementById("leaderboard");
+                        ul.innerHTML = ""; // clear old list
+
+                        data.forEach(user => {
+                            const li = document.createElement("li");
+                            li.textContent = `${user.name} || ₹${user.totalExpense}`;
+                            ul.appendChild(li);
+                        });
+                    } else {
+                        console.error("Failed to fetch leaderboard:", res.status);
+                        alert("Failed to fetch leaderboard.");
+                    }
+                } catch(err) {
+                    console.error("Error:", err);
+                    alert("Unable to fetch Leaderboard");
+                }
+            };
+        }
+    }
+
+  } catch (error) {
+    console.error("Unable to fetch premium user status to display", error);
+    }
+
+
 }
 
 
@@ -103,31 +170,6 @@ display(); // initial call to display expenses
 
 
 // buy premium button
-
-//  const cashfree = Cashfree({
-//                 mode: "sandbox",
-//             });
-//             document.getElementById("renderBtn").addEventListener("click", async () => {
-
-//                 try{
-//                     //Fetch payment session id from backend
-//                     const response = await fetch('http://localhost:3000/pay',{
-//                         method:'POST',
-
-//                     });
-//                     const data = await response.json();
-//                     const paymentSessionId = data.paymentSessionId;
-                
-//                 let checkoutOptions = {
-//                     paymentSessionId: "paymentSessionId",
-//                     redirectTarget: "_self",
-//                 };
-//                 cashfree.checkout(checkoutOptions);
-
-//             }catch(err){
-//                 console.log("Error in payment",err);
-//             }
-//             });
 
 document.getElementById("renderBtn").addEventListener("click", async () => {
     const token = localStorage.getItem("token");
