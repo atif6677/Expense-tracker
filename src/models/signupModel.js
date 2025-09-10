@@ -22,6 +22,12 @@ const User = db.define("User", {
     type: DataTypes.STRING,
     allowNull: false
   },
+  // This is the new column for optimization
+  totalExpenses: {
+    type: DataTypes.INTEGER, // Or DataTypes.DECIMAL for more precision with money
+    defaultValue: 0,
+    allowNull: false
+  }
 });
 
 module.exports = User;

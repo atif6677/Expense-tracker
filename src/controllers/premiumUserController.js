@@ -2,9 +2,7 @@
 
 const Order = require("../models/orderModel");
 const User = require("../models/signupModel");
-const Expense = require("../models/homeModel");
-const { Sequelize } = require("sequelize");
-
+// No longer need Expense or Sequelize here for the leaderboard!
 
 exports.premiumContent = async (req, res) => {
   try {
@@ -13,41 +11,26 @@ exports.premiumContent = async (req, res) => {
     });
 
     if (!userStatus) {
-      return res.status(200).json({ status: "FAILED" }); // Not premium
+      return res.status(200).json({ status: "FAILED" });
     }
 
-    return res.status(200).json({ status: "SUCCESSFUL" }); // Premium
+    return res.status(200).json({ status: "SUCCESSFUL" });
   } catch (err) {
     console.error("Error in premiumContent:", err);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
 
-
 exports.leaderboard = async (req, res) => {
   try {
+    // ✅ This is the new, highly efficient query!
     const leaderboard = await User.findAll({
       attributes: [
-        "id",
         "name",
-        [
-          Sequelize.fn(
-            "COALESCE",
-            Sequelize.fn("SUM", Sequelize.col("expenses.amount")),
-            0
-          ),
-          "totalExpense"
-        ]
+        // Alias 'totalExpenses' to 'totalExpense' to match the front-end's expectation
+        ["totalExpenses", "totalExpense"] 
       ],
-      include: [
-        {
-          model: Expense,
-          attributes: [],
-          required: false // LEFT JOIN so users with no expenses are included
-        }
-      ],
-      group: ["User.id"],
-      order: [[Sequelize.literal("totalExpense"), "DESC"]]
+      order: [["totalExpenses", "DESC"]] // Order by the pre-calculated column
     });
 
     res.json(leaderboard);
