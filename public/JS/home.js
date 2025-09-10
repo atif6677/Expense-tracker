@@ -219,7 +219,7 @@ document.getElementById("renderBtn").addEventListener("click", async () => {
 
                 alert("Transaction Failed ❌");
             }
-        }).open();
+        });
 
     } catch (err) {
         console.error("Error starting payment:", err);
